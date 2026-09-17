@@ -1,0 +1,188 @@
+{
+  "version": "2.1.0",
+  "name": "SlopLint 规则库 · 中文 AI 味模式",
+  "calibration": 6.0,
+  "source": "数据验证特征来自 lieflat-less-ai-tone（283万字对照研究，MIT 许可）；语感特征为补充，标注待验证",
+  "patterns": [
+    {
+      "id": "empty-colon",
+      "name": "引列表的冒号",
+      "weight": 3,
+      "evidence": "corpus",
+      "R": "9.4",
+      "type": "regex",
+      "keywords": ["以下几个方面", "以下几种", "以下几点", "主要包括", "主要分为", "具体如下", "体现在以下"],
+      "regex": "(以下几个方面|以下几种|以下几点|主要包括|主要分为|具体如下|体现在以下)[^：:]{0,8}[：:]",
+      "comment": "冒号前面那句是废话，只负责引出后面的列表。真人说话不会先绕这么一圈。"
+    },
+    {
+      "id": "prompt-colon",
+      "name": "提示式冒号",
+      "weight": 3,
+      "evidence": "corpus",
+      "R": "3.8",
+      "type": "regex",
+      "keywords": ["核心是", "说白了", "答案是", "关键是", "重点是", "归根结底是"],
+      "regex": "(核心是|说白了|答案是|关键是|重点是|归根结底是|本质上是)[：:]",
+      "comment": "「核心是：」「说白了：」这种冒号 AI 特别爱用。想说什么直接说，不用先打个招呼。"
+    },
+    {
+      "id": "antithesis",
+      "name": "不是…而是…",
+      "weight": 3,
+      "evidence": "corpus",
+      "R": "3.4",
+      "type": "regex",
+      "keywords": [],
+      "regex": "不是[^，。；！？]{0,25}而是",
+      "comment": "「不是 A 而是 B」是 AI 最爱的句式之一。拆成两句，或者直接说 B。"
+    },
+    {
+      "id": "filler-opener",
+      "name": "说白了式开场",
+      "weight": 3,
+      "evidence": "corpus",
+      "R": "3.2",
+      "type": "regex",
+      "keywords": ["说白了", "说穿了", "说白了就是"],
+      "regex": "说白了|说穿了",
+      "comment": "「说白了」「说穿了」这种开场白用得太密，像在刻意装随意。"
+    },
+    {
+      "id": "ordinal-heading",
+      "name": "一二三式小标题",
+      "weight": 3,
+      "evidence": "corpus",
+      "R": "3.1",
+      "type": "line-start",
+      "keywords": [],
+      "regex": "^[一二三四五六七八九十]{1,3}[、.．]|^[0-9]{1,2}[、.．]",
+      "comment": "小标题全用「一、二、三」开头，工整得像说明书。"
+    },
+    {
+      "id": "em-dash",
+      "name": "破折号太多",
+      "weight": 3,
+      "evidence": "corpus",
+      "R": "3.0",
+      "type": "density",
+      "threshold": 1.5,
+      "keywords": [],
+      "regex": "——",
+      "comment": "破折号（——）用得太密。真人偶尔用一下，AI 几乎句句都来。"
+    },
+    {
+      "id": "translationese",
+      "name": "翻译腔",
+      "weight": 3,
+      "evidence": "corpus",
+      "R": "2.6-5.3",
+      "type": "regex",
+      "keywords": ["当…时", "对于…来说", "这意味着", "然而"],
+      "regex": "当(?!今)[^，。；！？]{0,30}时|对于[^，。；！？]{0,30}来说|这意味着|(^|[。！？；])然而[，,]",
+      "comment": "「当…时」「对于…来说」「这意味着」是从英文硬翻过来的，中文口语不这么说。"
+    },
+    {
+      "id": "dunhao-density",
+      "name": "顿号成串",
+      "weight": 2,
+      "evidence": "corpus",
+      "R": "1.8",
+      "type": "density",
+      "threshold": 2.5,
+      "keywords": [],
+      "regex": "、",
+      "comment": "一句话里顿号连着一串排下来，读起来像在念清单。"
+    },
+    {
+      "id": "low-number-density",
+      "name": "通篇没数字",
+      "weight": 2,
+      "evidence": "corpus",
+      "R": "0.35",
+      "type": "density-below",
+      "threshold": 8.0,
+      "keywords": [],
+      "regex": "[0-9一二三四五六七八九十百千万零两]",
+      "comment": "整篇没出现具体的数据、时间、数量。真人会写「省了两个下午」，AI 只会说「显著提升」。"
+    },
+    {
+      "id": "universal-opener",
+      "name": "万能开头",
+      "weight": 1,
+      "evidence": "heuristic",
+      "R": "未验证",
+      "type": "regex",
+      "keywords": ["随着科技的发展", "随着社会的发展", "在当今社会", "在当今这个时代", "近年来", "众所周知"],
+      "regex": "随着[^，。；！？]{0,20}的(发展|进步|到来|普及)|在当今[^，。；！？]{0,20}(时代|社会)|众所周知",
+      "comment": "「随着…的发展」「近年来」「众所周知」——这种开头贴到任何文章都能用，等于什么都没说。"
+    },
+    {
+      "id": "summary-close",
+      "name": "每段都综上",
+      "weight": 1,
+      "evidence": "heuristic",
+      "R": "未验证",
+      "type": "regex",
+      "keywords": ["综上所述", "总而言之", "总的来说", "一言以蔽之", "由此可见"],
+      "regex": "综上所述|总而言之|总的来说|一言以蔽之|由此可见",
+      "comment": "「综上所述」挂在每段结尾，但不带新信息，只是走个过场。"
+    },
+    {
+      "id": "no-stance",
+      "name": "没有立场",
+      "weight": 1,
+      "evidence": "heuristic",
+      "R": "未验证",
+      "type": "regex",
+      "keywords": ["各有优缺点", "需视个人需求", "因人而异", "需根据实际情况", "见仁见智"],
+      "regex": "各有优缺点|需视个人需求|因人而异|需根据实际|见仁见智|有利有弊",
+      "comment": "「各有优缺点」「因人而异」——把最难的判断推给读者，等于没表态。"
+    },
+    {
+      "id": "idiom-filler",
+      "name": "凑数成语",
+      "weight": 1,
+      "evidence": "heuristic",
+      "R": "未验证",
+      "type": "regex",
+      "keywords": ["与时俱进", "开拓创新", "与日俱增", "任重道远", "继往开来"],
+      "regex": "与时俱进|开拓创新|与日俱增|任重道远|继往开来",
+      "comment": "「与时俱进」「开拓创新」——删掉前后文意思不变，纯粹凑字数。"
+    },
+    {
+      "id": "adjective-inflation",
+      "name": "空形容词",
+      "weight": 1,
+      "evidence": "heuristic",
+      "R": "未验证",
+      "type": "regex",
+      "keywords": ["显著提升", "大幅改善", "有效优化", "成效卓越", "圆满成功", "深远影响"],
+      "regex": "显著(提升|改善|提高|增强)|大幅(改善|提升|提高)|有效(优化|促进|提升)|成效卓越|圆满成功|深远影响",
+      "comment": "「显著提升」「大幅改善」——一个具体数字，胜过一个漂亮形容词。"
+    }
+  ],
+  "llm_patterns": [
+    {
+      "id": "zero-anaphora-comment",
+      "name": "段落开头没头没尾的评价",
+      "weight": 3,
+      "R": "4.4",
+      "comment": "段落开头直接抛一句评价（比如「听起来像一条功能描述」），却不说是评价什么，读者得回头翻上文才懂。补一个「这」就顺了。"
+    },
+    {
+      "id": "anthropomorphic-metaphor",
+      "name": "拟人化比喻",
+      "weight": 3,
+      "R": "7.3",
+      "comment": "「像一位不知疲倦的助手」这种把东西比作人的比喻，AI 爱用。注意 AI 用比喻的总量其实比人少，问题只出在这一种。"
+    },
+    {
+      "id": "adjacent-parallel",
+      "name": "连着几句一个模子",
+      "weight": 2,
+      "R": "2.0",
+      "comment": "连续好几句结构一模一样，像填格子。注意：句内排比人反而用得多，只有相邻句长一样才是 AI 味。"
+    }
+  ]
+}
